@@ -21,7 +21,7 @@ import android.widget.TextView;
 import com.github.gfranks.collapsible.calendar.model.CollapsibleCalendarEvent;
 import com.github.gfranks.collapsible.calendar.model.CollapsibleState;
 import com.github.gfranks.collapsible.calendar.model.Day;
-import com.github.gfranks.collapsible.calendar.model.Formatter;
+import com.github.gfranks.collapsible.calendar.model.IFormatter;
 import com.github.gfranks.collapsible.calendar.model.Month;
 import com.github.gfranks.collapsible.calendar.model.Week;
 import com.github.gfranks.collapsible.calendar.widget.DayView;
@@ -38,7 +38,7 @@ public class CollapsibleCalendarView extends LinearLayout implements View.OnClic
 
     private final LayoutInflater mInflater;
     private final RecycleBin mRecycleBin = new RecycleBin();
-
+    private final GestureDetector mGestureDetector;
     private CalendarManager mManager;
     private TextView mTitleView;
     private TextView mSelectionTitleView;
@@ -65,7 +65,6 @@ public class CollapsibleCalendarView extends LinearLayout implements View.OnClic
     private LinearLayout mHeader;
     private ResizeManager mResizeManager;
     private boolean mInitialized;
-    private final GestureDetector mGestureDetector;
 
     public CollapsibleCalendarView(Context context) {
         this(context, null);
@@ -104,7 +103,8 @@ public class CollapsibleCalendarView extends LinearLayout implements View.OnClic
             }
         }
 
-        mManager = new CalendarManager(LocalDate.now(), startingState, LocalDate.now(), LocalDate.now().plusYears(1));
+//        mManager = new CalendarManager(LocalDate.now(), startingState, LocalDate.now(), LocalDate.now().plusYears(1));
+        mManager = new CalendarManager(LocalDate.now(), startingState, null, null);
         mInflater = LayoutInflater.from(context);
         mResizeManager = new ResizeManager(this);
         inflate(context, R.layout.calendar_layout, this);
@@ -144,19 +144,19 @@ public class CollapsibleCalendarView extends LinearLayout implements View.OnClic
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mTitleView = (TextView) findViewById(R.id.title);
+        mTitleView = findViewById(R.id.title);
         if (mHeaderBold) {
             mTitleView.setTypeface(null, Typeface.BOLD);
         }
-        mPrev = (ImageButton) findViewById(R.id.prev);
-        mNext = (ImageButton) findViewById(R.id.next);
-        mWeeksView = (LinearLayout) findViewById(R.id.weeks);
+        mPrev = findViewById(R.id.prev);
+        mNext = findViewById(R.id.next);
+        mWeeksView = findViewById(R.id.weeks);
 
-        mHeader = (LinearLayout) findViewById(R.id.header);
+        mHeader = findViewById(R.id.header);
         if (mNoHeader) {
             mHeader.setVisibility(View.GONE);
         }
-        mSelectionTitleView = (TextView) findViewById(R.id.selection_title);
+        mSelectionTitleView = findViewById(R.id.selection_title);
         if (mHeaderBold) {
             mSelectionTitleView.setTypeface(null, Typeface.BOLD);
         }
@@ -372,7 +372,7 @@ public class CollapsibleCalendarView extends LinearLayout implements View.OnClic
         return mManager;
     }
 
-    public void setFormatter(Formatter formatter) {
+    public void setFormatter(IFormatter formatter) {
         mManager.setFormatter(formatter);
     }
 
@@ -524,9 +524,9 @@ public class CollapsibleCalendarView extends LinearLayout implements View.OnClic
     private void populateDays() {
         if (!mInitialized) {
             if (mManager != null) {
-                Formatter formatter = mManager.getFormatter();
+                IFormatter formatter = mManager.getFormatter();
 
-                LinearLayout layout = (LinearLayout) findViewById(R.id.days);
+                LinearLayout layout = findViewById(R.id.days);
 
                 LocalDate date = LocalDate.now().withDayOfWeek(DateTimeConstants.MONDAY);
                 for (int i = 0; i < 7; i++) {

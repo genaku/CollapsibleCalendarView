@@ -5,7 +5,7 @@ import com.github.gfranks.collapsible.calendar.model.CollapsibleCalendarEvent;
 import com.github.gfranks.collapsible.calendar.model.CollapsibleState;
 import com.github.gfranks.collapsible.calendar.model.Day;
 import com.github.gfranks.collapsible.calendar.model.DefaultFormatter;
-import com.github.gfranks.collapsible.calendar.model.Formatter;
+import com.github.gfranks.collapsible.calendar.model.IFormatter;
 import com.github.gfranks.collapsible.calendar.model.Month;
 import com.github.gfranks.collapsible.calendar.model.RangeUnit;
 import com.github.gfranks.collapsible.calendar.model.Week;
@@ -29,7 +29,7 @@ class CalendarManager<T extends CollapsibleCalendarEvent> {
     private LocalDate mSelected;
     private LocalDate mMinDate;
     private LocalDate mMaxDate;
-    private Formatter formatter;
+    private IFormatter formatter;
 
     private LocalDate mActiveMonth;
     private Map<String, List<T>> mEventsMap = new HashMap<String, List<T>>();
@@ -45,7 +45,7 @@ class CalendarManager<T extends CollapsibleCalendarEvent> {
                            CollapsibleState state,
                            LocalDate minDate,
                            LocalDate maxDate,
-                           Formatter formatter) {
+                           IFormatter formatter) {
         mToday = LocalDate.now();
         mState = state;
 
@@ -97,7 +97,7 @@ class CalendarManager<T extends CollapsibleCalendarEvent> {
     public boolean selectPeriod(LocalDate date) {
         if (!mUnit.isIn(date) && mUnit.setPeriod(date)) {
             mUnit.select(mSelected);
-            setActiveMonth(mUnit.getFrom());
+            setActiveMonth(mUnit.getDateFrom());
             return true;
         } else {
             return false;
@@ -124,7 +124,7 @@ class CalendarManager<T extends CollapsibleCalendarEvent> {
     }
 
     public String getHeaderText() {
-        return formatter.getHeaderText(mUnit.getType(), mUnit.getFrom(), mUnit.getTo());
+        return formatter.getHeaderText(mUnit.getType(), mUnit.getDateFrom(), mUnit.getDateTo());
     }
 
     public boolean hasNext() {
@@ -138,7 +138,7 @@ class CalendarManager<T extends CollapsibleCalendarEvent> {
     public boolean next() {
         if (mUnit.next()) {
             mUnit.select(mSelected);
-            setActiveMonth(mUnit.getFrom());
+            setActiveMonth(mUnit.getDateFrom());
             return true;
         } else {
             return false;
@@ -148,7 +148,7 @@ class CalendarManager<T extends CollapsibleCalendarEvent> {
     public boolean prev() {
         if (mUnit.prev()) {
             mUnit.select(mSelected);
-            setActiveMonth(mUnit.getTo());
+            setActiveMonth(mUnit.getDateTo());
             return true;
         } else {
             return false;
@@ -189,13 +189,13 @@ class CalendarManager<T extends CollapsibleCalendarEvent> {
 
             setActiveMonth(mSelected);
         } else {
-            setActiveMonth(mUnit.getFrom());
+            setActiveMonth(mUnit.getDateFrom());
             toggleFromMonth(mUnit.getFirstDateOfCurrentMonth(mActiveMonth));
         }
     }
 
     void toggleToWeek(int weekInMonth) {
-        LocalDate date = mUnit.getFrom().plusDays(weekInMonth * 7);
+        LocalDate date = mUnit.getDateFrom().plusDays(weekInMonth * 7);
         toggleFromMonth(date);
     }
 
@@ -231,10 +231,10 @@ class CalendarManager<T extends CollapsibleCalendarEvent> {
         if (mUnit.isInView(mSelected)) {
             if (mUnit.isIn(mSelected)) {
                 return mUnit.getWeekInMonth(mSelected);
-            } else if (mUnit.getFrom().isAfter(mSelected)) {
-                return mUnit.getWeekInMonth(mUnit.getFrom());
+            } else if (mUnit.getDateFrom().isAfter(mSelected)) {
+                return mUnit.getWeekInMonth(mUnit.getDateFrom());
             } else {
-                return mUnit.getWeekInMonth(mUnit.getTo());
+                return mUnit.getWeekInMonth(mUnit.getDateTo());
             }
         } else {
             return mUnit.getFirstWeek(mUnit.getFirstDateOfCurrentMonth(mActiveMonth)); // if not in this month first week should be selected
@@ -270,11 +270,11 @@ class CalendarManager<T extends CollapsibleCalendarEvent> {
         mMaxDate = maxDate;
     }
 
-    public Formatter getFormatter() {
+    public IFormatter getFormatter() {
         return formatter;
     }
 
-    public void setFormatter(Formatter formatter) {
+    public void setFormatter(IFormatter formatter) {
         if (formatter == null) {
             this.formatter = new DefaultFormatter();
         } else {

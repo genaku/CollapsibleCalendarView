@@ -22,13 +22,13 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class CalendarManagerTest {
 
-    Formatter formatter;
+    IFormatter formatter;
     CalendarManager mCalendarManager;
 
     @Before
     public void setUp() throws Exception {
 
-        formatter = mock(Formatter.class);
+        formatter = mock(IFormatter.class);
 
         mCalendarManager = new CalendarManager(LocalDate.now(),
                 CalendarManager.State.MONTH, LocalDate.now().minusDays(1),
@@ -95,7 +95,7 @@ public class CalendarManagerTest {
         LocalDate date = LocalDate.now();
         RangeUnit unit = mock(RangeUnit.class);
         when(unit.getType()).thenReturn(CalendarUnit.TYPE_WEEK);
-        when(unit.getFrom()).thenReturn(date);
+        when(unit.getDateFrom()).thenReturn(date);
         when(unit.getTo()).thenReturn(date);
 
         when(formatter.getHeaderText(eq(CalendarUnit.TYPE_WEEK), eq(date), eq(date))).thenReturn("header");
@@ -163,7 +163,7 @@ public class CalendarManagerTest {
 
         RangeUnit unit = mock(RangeUnit.class);
         when(unit.next()).thenReturn(true);
-        when(unit.getFrom()).thenReturn(from);
+        when(unit.getDateFrom()).thenReturn(from);
 
         mCalendarManager.setUnit(unit);
 
@@ -230,7 +230,7 @@ public class CalendarManagerTest {
 
         RangeUnit unit = mock(RangeUnit.class);
         when(unit.isInView(selected)).thenReturn(false);
-        when(unit.getFrom()).thenReturn(from);
+        when(unit.getDateFrom()).thenReturn(from);
         when(unit.getFirstDateOfCurrentMonth(any(LocalDate.class))).thenReturn(from);
         mCalendarManager.setUnit(unit);
 
@@ -298,7 +298,7 @@ public class CalendarManagerTest {
         RangeUnit unit = mock(RangeUnit.class);
         when(unit.isInView(any(LocalDate.class))).thenReturn(true);
         when(unit.isIn(any(LocalDate.class))).thenReturn(false);
-        when(unit.getFrom()).thenReturn(from);
+        when(unit.getDateFrom()).thenReturn(from);
         when(unit.getWeekInMonth(from)).thenReturn(12);
 
         mCalendarManager.setUnit(unit);
@@ -316,7 +316,7 @@ public class CalendarManagerTest {
         RangeUnit unit = mock(RangeUnit.class);
         when(unit.isInView(any(LocalDate.class))).thenReturn(true);
         when(unit.isIn(any(LocalDate.class))).thenReturn(false);
-        when(unit.getFrom()).thenReturn(from);
+        when(unit.getDateFrom()).thenReturn(from);
         when(unit.getTo()).thenReturn(to);
         when(unit.getWeekInMonth(to)).thenReturn(12);
 

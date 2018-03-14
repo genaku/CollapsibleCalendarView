@@ -6,6 +6,7 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 27
@@ -26,7 +27,6 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
 
     compileOptions {
@@ -34,9 +34,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
 
-
     buildTypes {
-
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
@@ -48,4 +46,9 @@ android {
 dependencies {
     compile 'joda-time:joda-time:2.9.9'
     compile 'com.android.support:appcompat-v7:27.1.0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    testCompile 'junit:junit:4.12'
+}
+repositories {
+    mavenCentral()
 }
