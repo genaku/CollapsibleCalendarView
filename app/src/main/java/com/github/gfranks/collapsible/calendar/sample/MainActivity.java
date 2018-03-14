@@ -3,6 +3,7 @@ package com.github.gfranks.collapsible.calendar.sample;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -26,17 +27,21 @@ public class MainActivity extends Activity implements CollapsibleCalendarView.Li
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mCalendarView = (CollapsibleCalendarView) findViewById(R.id.calendar);
-        mListView = (ListView) findViewById(R.id.calendar_event_list);
+        mCalendarView = findViewById(R.id.calendar);
+        mListView = findViewById(R.id.calendar_event_list);
 
         mCalendarView.setListener(this);
         mCalendarView.addEvents(getEvents());
+        mCalendarView.setMinDate(new LocalDate(2010, 1, 1));
+        mCalendarView.setMaxDate(new LocalDate(2020, 1, 1));
+        Log.d("TAG", "min date" + mCalendarView.getMinDate().toString());
+        Log.d("TAG", "max date" + mCalendarView.getMaxDate().toString());
     }
 
     private List<Event> getEvents() {
         List<Event> events = new ArrayList<>();
-        for (int i=0; i<20; i++) {
-            events.add(new Event("Event " + (i+1), System.currentTimeMillis() + (86400000 * i)));
+        for (int i=-20; i<80; i++) {
+            events.add(new Event("Event " + (i+1), System.currentTimeMillis() + (21600000 * i)));
         }
         return events;
     }

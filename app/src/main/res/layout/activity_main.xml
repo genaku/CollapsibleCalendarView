@@ -17,6 +17,8 @@
         app:ccv_weekDayTextColor="#FFFFFF"
         app:ccv_dayTextColor="#FFFFFF"
         app:ccv_eventIndicatorColor="#FFE18B"
+        app:ccv_disableSwipe="false"
+        app:ccv_showInactiveDays="true"
         app:ccv_selectedDayBackgroundColor="#175662"
         app:ccv_allowStateChange="true"/>
 
