@@ -147,6 +147,6 @@ public class RangeUnitTest {
 
     @Test
     public void testGetFirstEnabled() throws Exception {
-        assertEquals(mRangeUnit.getFrom(), mRangeUnit.getFirstEnabled());
+        assertEquals(mRangeUnit.getDateFrom(), mRangeUnit.getFirstEnabled());
     }
 }

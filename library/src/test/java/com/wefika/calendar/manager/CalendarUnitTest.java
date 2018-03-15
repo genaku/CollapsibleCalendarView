@@ -27,7 +27,7 @@ public class CalendarUnitTest {
         LocalDate today = LocalDate.now();
 
         assertEquals(today, mUnit.getToday());
-        assertEquals(today.withDayOfWeek(DateTimeConstants.MONDAY), mUnit.getFrom());
+        assertEquals(today.withDayOfWeek(DateTimeConstants.MONDAY), mUnit.getDateFrom());
         assertEquals(today.withDayOfWeek(DateTimeConstants.SUNDAY), mUnit.getTo());
 
     }
@@ -37,10 +37,10 @@ public class CalendarUnitTest {
 
         LocalDate nextWeek = LocalDate.now().plusWeeks(1);
 
-        mUnit.setFrom(nextWeek.withDayOfWeek(DateTimeConstants.MONDAY));
+        mUnit.setDateFrom(nextWeek.withDayOfWeek(DateTimeConstants.MONDAY));
         mUnit.setTo(nextWeek.withDayOfWeek(DateTimeConstants.SUNDAY));
 
-        assertEquals(nextWeek.withDayOfWeek(DateTimeConstants.MONDAY), mUnit.getFrom());
+        assertEquals(nextWeek.withDayOfWeek(DateTimeConstants.MONDAY), mUnit.getDateFrom());
         assertEquals(nextWeek.withDayOfWeek(DateTimeConstants.SUNDAY), mUnit.getTo());
 
     }

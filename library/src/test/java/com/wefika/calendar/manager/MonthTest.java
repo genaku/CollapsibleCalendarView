@@ -104,7 +104,7 @@ public class MonthTest {
         Month month = new Month(mToday, mToday, null, mToday);
         assertFalse(month.next());
 
-        assertEquals(LocalDate.parse("2014-10-01"), month.getFrom());
+        assertEquals(LocalDate.parse("2014-10-01"), month.getDateFrom());
         assertEquals(LocalDate.parse("2014-10-31"), month.getTo());
 
     }
@@ -114,10 +114,10 @@ public class MonthTest {
 
         assertTrue(mMonth.next());
 
-        assertEquals(LocalDate.parse("2014-11-01"), mMonth.getFrom());
+        assertEquals(LocalDate.parse("2014-11-01"), mMonth.getDateFrom());
         assertEquals(LocalDate.parse("2014-11-30"), mMonth.getTo());
 
-        assertEquals(LocalDate.parse("2014-10-27"), mMonth.getWeeks().get(0).getFrom());
+        assertEquals(LocalDate.parse("2014-10-27"), mMonth.getWeeks().get(0).getDateFrom());
 
     }
 
@@ -127,10 +127,10 @@ public class MonthTest {
         Month month = new Month(mToday, mToday, mToday, null);
         assertFalse(month.prev());
 
-        assertEquals(LocalDate.parse("2014-10-01"), month.getFrom());
+        assertEquals(LocalDate.parse("2014-10-01"), month.getDateFrom());
         assertEquals(LocalDate.parse("2014-10-31"), month.getTo());
 
-        assertEquals(LocalDate.parse("2014-09-29"), month.getWeeks().get(0).getFrom());
+        assertEquals(LocalDate.parse("2014-09-29"), month.getWeeks().get(0).getDateFrom());
 
     }
 
@@ -139,10 +139,10 @@ public class MonthTest {
 
         assertTrue(mMonth.prev());
 
-        assertEquals(LocalDate.parse("2014-09-01"), mMonth.getFrom());
+        assertEquals(LocalDate.parse("2014-09-01"), mMonth.getDateFrom());
         assertEquals(LocalDate.parse("2014-09-30"), mMonth.getTo());
 
-        assertEquals(LocalDate.parse("2014-09-01"), mMonth.getWeeks().get(0).getFrom());
+        assertEquals(LocalDate.parse("2014-09-01"), mMonth.getWeeks().get(0).getDateFrom());
     }
 
     @Test
@@ -284,7 +284,7 @@ public class MonthTest {
 
         for (int i = 0; i < weeks.size(); i++) {
 
-            assertEquals(base.plusWeeks(i), weeks.get(i).getFrom());
+            assertEquals(base.plusWeeks(i), weeks.get(i).getDateFrom());
             assertEquals(base.plusWeeks(i).withDayOfWeek(DateTimeConstants.SUNDAY), weeks.get(i).getTo());
 
         }

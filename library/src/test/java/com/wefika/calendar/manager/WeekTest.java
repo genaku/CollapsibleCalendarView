@@ -85,7 +85,7 @@ public class WeekTest {
 
         assertTrue(mWeek.next());
 
-        assertEquals(nextWeek, mWeek.getFrom());
+        assertEquals(nextWeek, mWeek.getDateFrom());
         assertEquals(nextWeekEnd, mWeek.getTo());
 
         assertEquals(nextWeek, mWeek.getDays().get(0).getDate());
@@ -104,7 +104,7 @@ public class WeekTest {
 
         assertFalse(week.next());
 
-        assertEquals(start, week.getFrom());
+        assertEquals(start, week.getDateFrom());
         assertEquals(end, week.getTo());
 
         assertEquals(start, week.getDays().get(0).getDate());
@@ -120,7 +120,7 @@ public class WeekTest {
 
         assertTrue(mWeek.prev());
 
-        assertEquals(start, mWeek.getFrom());
+        assertEquals(start, mWeek.getDateFrom());
         assertEquals(end, mWeek.getTo());
 
         assertEquals(start, mWeek.getDays().get(0).getDate());
@@ -139,7 +139,7 @@ public class WeekTest {
 
         assertFalse(week.prev());
 
-        assertEquals(start, week.getFrom());
+        assertEquals(start, week.getDateFrom());
         assertEquals(end, week.getTo());
 
         assertEquals(start, week.getDays().get(0).getDate());
