@@ -21,7 +21,7 @@ import android.widget.TextView;
 import com.github.gfranks.collapsible.calendar.model.CollapsibleCalendarEvent;
 import com.github.gfranks.collapsible.calendar.model.CollapsibleState;
 import com.github.gfranks.collapsible.calendar.model.Day;
-import com.github.gfranks.collapsible.calendar.model.Formatter;
+import com.github.gfranks.collapsible.calendar.model.IFormatter;
 import com.github.gfranks.collapsible.calendar.model.Month;
 import com.github.gfranks.collapsible.calendar.model.Week;
 import com.github.gfranks.collapsible.calendar.widget.DayView;
@@ -30,15 +30,13 @@ import com.github.gfranks.collapsible.calendar.widget.WeekView;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 public class CollapsibleCalendarView extends LinearLayout implements View.OnClickListener, View.OnTouchListener {
 
     private final LayoutInflater mInflater;
     private final RecycleBin mRecycleBin = new RecycleBin();
-
+    private final GestureDetector mGestureDetector;
     private CalendarManager mManager;
     private TextView mTitleView;
     private TextView mSelectionTitleView;
@@ -61,11 +59,10 @@ public class CollapsibleCalendarView extends LinearLayout implements View.OnClic
     private boolean mShowInactiveDays = true;
     private boolean mAllowStateChange = true;
     private boolean mDisableSwipe = true;
-    private Listener mListener;
+    private ICollapsibleCalendarListener mListener;
     private LinearLayout mHeader;
     private ResizeManager mResizeManager;
     private boolean mInitialized;
-    private final GestureDetector mGestureDetector;
 
     public CollapsibleCalendarView(Context context) {
         this(context, null);
@@ -110,7 +107,7 @@ public class CollapsibleCalendarView extends LinearLayout implements View.OnClic
         inflate(context, R.layout.calendar_layout, this);
         setOrientation(VERTICAL);
 
-        mGestureDetector = new GestureDetector(context, new GestureListener());
+        mGestureDetector = new GestureDetector(context, new GestureListener(this));
         setOnTouchListener(this);
     }
 
@@ -133,30 +130,26 @@ public class CollapsibleCalendarView extends LinearLayout implements View.OnClic
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (mDisableSwipe) {
-            return true;
-        }
-
-        return mGestureDetector.onTouchEvent(event);
+        return mDisableSwipe || mGestureDetector.onTouchEvent(event);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mTitleView = (TextView) findViewById(R.id.title);
+        mTitleView = findViewById(R.id.title);
         if (mHeaderBold) {
             mTitleView.setTypeface(null, Typeface.BOLD);
         }
-        mPrev = (ImageButton) findViewById(R.id.prev);
-        mNext = (ImageButton) findViewById(R.id.next);
-        mWeeksView = (LinearLayout) findViewById(R.id.weeks);
+        mPrev = findViewById(R.id.prev);
+        mNext = findViewById(R.id.next);
+        mWeeksView = findViewById(R.id.weeks);
 
-        mHeader = (LinearLayout) findViewById(R.id.header);
+        mHeader = findViewById(R.id.header);
         if (mNoHeader) {
             mHeader.setVisibility(View.GONE);
         }
-        mSelectionTitleView = (TextView) findViewById(R.id.selection_title);
+        mSelectionTitleView = findViewById(R.id.selection_title);
         if (mHeaderBold) {
             mSelectionTitleView.setTypeface(null, Typeface.BOLD);
         }
@@ -372,11 +365,11 @@ public class CollapsibleCalendarView extends LinearLayout implements View.OnClic
         return mManager;
     }
 
-    public void setFormatter(Formatter formatter) {
+    public void setFormatter(IFormatter formatter) {
         mManager.setFormatter(formatter);
     }
 
-    public void setListener(Listener listener) {
+    public void setListener(ICollapsibleCalendarListener listener) {
         mListener = listener;
     }
 
@@ -524,9 +517,9 @@ public class CollapsibleCalendarView extends LinearLayout implements View.OnClic
     private void populateDays() {
         if (!mInitialized) {
             if (mManager != null) {
-                Formatter formatter = mManager.getFormatter();
+                IFormatter formatter = mManager.getFormatter();
 
-                LinearLayout layout = (LinearLayout) findViewById(R.id.days);
+                LinearLayout layout = findViewById(R.id.days);
 
                 LocalDate date = LocalDate.now().withDayOfWeek(DateTimeConstants.MONDAY);
                 for (int i = 0; i < 7; i++) {
@@ -579,7 +572,7 @@ public class CollapsibleCalendarView extends LinearLayout implements View.OnClic
         return mWeeksView;
     }
 
-    public interface Listener<T extends CollapsibleCalendarEvent> {
+    public interface ICollapsibleCalendarListener<T extends CollapsibleCalendarEvent> {
         void onDateSelected(LocalDate date, List<T> events);
 
         void onMonthChanged(LocalDate date);
@@ -587,47 +580,4 @@ public class CollapsibleCalendarView extends LinearLayout implements View.OnClic
         void onHeaderClick();
     }
 
-    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
-
-        private static final int SWIPE_DISTANCE_THRESHOLD = 100;
-        private static final int SWIPE_VELOCITY_THRESHOLD = 100;
-
-        @Override
-        public boolean onDown(MotionEvent e) {
-            return true;
-        }
-
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            try {
-                float distanceX = e2.getX() - e1.getX();
-                float distanceY = e2.getY() - e1.getY();
-                if (Math.abs(distanceX) > Math.abs(distanceY) && Math.abs(distanceX) > SWIPE_DISTANCE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                    if (distanceX > 0) {
-                        prev();
-                    } else {
-                        next();
-                    }
-                    return true;
-                }
-                return false;
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
-
-            return false;
-        }
-    }
-
-    private class RecycleBin {
-        private final Queue<View> mViews = new LinkedList<>();
-
-        public View recycleView() {
-            return mViews.poll();
-        }
-
-        public void addView(View view) {
-            mViews.add(view);
-        }
-    }
 }

@@ -22,13 +22,13 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class CalendarManagerTest {
 
-    Formatter formatter;
+    IFormatter formatter;
     CalendarManager mCalendarManager;
 
     @Before
     public void setUp() throws Exception {
 
-        formatter = mock(Formatter.class);
+        formatter = mock(IFormatter.class);
 
         mCalendarManager = new CalendarManager(LocalDate.now(),
                 CalendarManager.State.MONTH, LocalDate.now().minusDays(1),
