@@ -47,9 +47,7 @@ class MainActivity : Activity(), CollapsibleCalendarView.ICollapsibleCalendarLis
 
     override fun onMonthChanged(date: LocalDate?) {}
 
-    override fun onHeaderClick() {
-        calendar.toggle()
-    }
+    override fun onHeaderClick() = calendar.toggle()
 
     private inner class EventListAdapter(context: Context, private val mEvents: ArrayList<CollapsibleCalendarEvent>) : ArrayAdapter<String>(context, android.R.layout.simple_list_item_1) {
 
@@ -63,9 +61,9 @@ class MainActivity : Activity(), CollapsibleCalendarView.ICollapsibleCalendarLis
 
         override fun getCount(): Int = mEvents.size
 
-        override fun getItem(position: Int): String? {
-            val event = mEvents[position] as Event
-            return mTimeFormat?.print(event.listCellTime) + " - " + event.title
+        override fun getItem(position: Int): String? = with(mEvents[position] as Event) {
+            mTimeFormat?.print(listCellTime) + " - " + title
         }
     }
+
 }

@@ -10,7 +10,7 @@ internal abstract class ProgressManager(
         val mFromMonth: Boolean
 ) {
 
-    protected var mWeeksView: LinearLayout = mCalendarView.weeksView
+    protected var mWeeksView: LinearLayout = mCalendarView.weeksView!!
     protected var mViews: ArrayList<AbstractViewHolder> = ArrayList()
     protected var mCalendarHolder: SizeViewHolder? = null
     protected var mWeeksHolder: SizeViewHolder? = null
