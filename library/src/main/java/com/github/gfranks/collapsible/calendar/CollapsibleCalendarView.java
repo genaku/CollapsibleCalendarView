@@ -203,7 +203,6 @@ public class CollapsibleCalendarView extends LinearLayout implements View.OnClic
     public void setEvents(List<? extends CollapsibleCalendarEvent> events) {
         mManager.setEvents(events);
         populateLayout();
-
         if (mListener != null) {
             mListener.onDateSelected(getSelectedDate(), mManager.getEventsForDate(getSelectedDate()));
         }
@@ -212,7 +211,6 @@ public class CollapsibleCalendarView extends LinearLayout implements View.OnClic
     public void addEvents(List<? extends CollapsibleCalendarEvent> events) {
         mManager.addEvents(events);
         populateLayout();
-
         if (mListener != null) {
             mListener.onDateSelected(getSelectedDate(), mManager.getEventsForDate(getSelectedDate()));
         }
@@ -221,7 +219,6 @@ public class CollapsibleCalendarView extends LinearLayout implements View.OnClic
     public void addEvent(CollapsibleCalendarEvent event) {
         mManager.addEvent(event);
         populateLayout();
-
         if (mListener != null) {
             mListener.onDateSelected(getSelectedDate(), mManager.getEventsForDate(getSelectedDate()));
         }
@@ -230,7 +227,6 @@ public class CollapsibleCalendarView extends LinearLayout implements View.OnClic
     public void removeEvent(CollapsibleCalendarEvent event) {
         mManager.removeEvent(event);
         populateLayout();
-
         if (mListener != null) {
             mListener.onDateSelected(getSelectedDate(), mManager.getEventsForDate(getSelectedDate()));
         }
@@ -385,7 +381,6 @@ public class CollapsibleCalendarView extends LinearLayout implements View.OnClic
     public void next() {
         if (mManager.next()) {
             populateLayout();
-
             if (mListener != null) {
                 mListener.onMonthChanged(mManager.getActiveMonth());
             }
@@ -395,7 +390,6 @@ public class CollapsibleCalendarView extends LinearLayout implements View.OnClic
     public void prev() {
         if (mManager.prev()) {
             populateLayout();
-
             if (mListener != null) {
                 mListener.onMonthChanged(mManager.getActiveMonth());
             }
@@ -573,11 +567,9 @@ public class CollapsibleCalendarView extends LinearLayout implements View.OnClic
         return mWeeksView;
     }
 
-    public interface ICollapsibleCalendarListener<T extends CollapsibleCalendarEvent> {
-        void onDateSelected(LocalDate date, List<T> events);
-
+    public interface ICollapsibleCalendarListener {
+        void onDateSelected(LocalDate date, List<CollapsibleCalendarEvent> events);
         void onMonthChanged(LocalDate date);
-
         void onHeaderClick();
     }
 

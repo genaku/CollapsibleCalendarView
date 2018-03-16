@@ -14,12 +14,12 @@ class DefaultFormatter(
     private val weekHeaderFormatter: DateTimeFormatter = DateTimeFormat.forPattern(weekPattern)
     private val monthHeaderFormatter: DateTimeFormatter = DateTimeFormat.forPattern(monthPattern)
 
-    override fun getDayName(date: LocalDate): String = date.toString(dayFormatter)
+    override fun getDayName(date: LocalDate?): String = date?.toString(dayFormatter) ?: ""
 
-    override fun getHeaderText(type: CalendarUnitType, from: LocalDate, to: LocalDate): String =
-            from.toString(when (type) {
+    override fun getHeaderText(type: CalendarUnitType, from: LocalDate?, to: LocalDate?): String =
+            from?.toString(when (type) {
                 CalendarUnitType.WEEK -> weekHeaderFormatter
                 CalendarUnitType.MONTH -> monthHeaderFormatter
-            })
+            }) ?: ""
 
 }

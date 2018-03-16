@@ -5,13 +5,14 @@ import android.content.Context
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import com.github.gfranks.collapsible.calendar.CollapsibleCalendarView
+import com.github.gfranks.collapsible.calendar.model.CollapsibleCalendarEvent
 import kotlinx.android.synthetic.main.activity_main.*
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import java.util.*
 
-class MainActivity : Activity(), CollapsibleCalendarView.ICollapsibleCalendarListener<Event> {
+class MainActivity : Activity(), CollapsibleCalendarView.ICollapsibleCalendarListener {
 
     private var mAdapter: EventListAdapter? = null
 
@@ -35,7 +36,7 @@ class MainActivity : Activity(), CollapsibleCalendarView.ICollapsibleCalendarLis
         }
     }
 
-    override fun onDateSelected(date: LocalDate, events: List<Event>) {
+    override fun onDateSelected(date: LocalDate, events: List<CollapsibleCalendarEvent>) {
         if (mAdapter == null || calendar_event_list.adapter == null) {
             mAdapter = EventListAdapter(this, ArrayList(events))
             calendar_event_list.adapter = mAdapter
@@ -44,17 +45,17 @@ class MainActivity : Activity(), CollapsibleCalendarView.ICollapsibleCalendarLis
         }
     }
 
-    override fun onMonthChanged(date: LocalDate) {}
+    override fun onMonthChanged(date: LocalDate?) {}
 
     override fun onHeaderClick() {
         calendar.toggle()
     }
 
-    private inner class EventListAdapter(context: Context, private val mEvents: ArrayList<Event>) : ArrayAdapter<String>(context, android.R.layout.simple_list_item_1) {
+    private inner class EventListAdapter(context: Context, private val mEvents: ArrayList<CollapsibleCalendarEvent>) : ArrayAdapter<String>(context, android.R.layout.simple_list_item_1) {
 
         val mTimeFormat: DateTimeFormatter? = DateTimeFormat.forPattern(" h:mm a")
 
-        fun setEvents(events: List<Event>) {
+        fun setEvents(events: List<CollapsibleCalendarEvent>) {
             mEvents.clear()
             mEvents.addAll(events)
             notifyDataSetChanged()
@@ -63,7 +64,7 @@ class MainActivity : Activity(), CollapsibleCalendarView.ICollapsibleCalendarLis
         override fun getCount(): Int = mEvents.size
 
         override fun getItem(position: Int): String? {
-            val event = mEvents[position]
+            val event = mEvents[position] as Event
             return mTimeFormat?.print(event.listCellTime) + " - " + event.title
         }
     }
