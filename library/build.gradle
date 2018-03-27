@@ -44,9 +44,9 @@ android {
 }
 
 dependencies {
-    compile 'joda-time:joda-time:2.9.9'
-    compile 'com.android.support:appcompat-v7:27.1.0'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'joda-time:joda-time:2.9.9'
+    implementation 'com.android.support:appcompat-v7:27.1.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {
     mavenCentral()
