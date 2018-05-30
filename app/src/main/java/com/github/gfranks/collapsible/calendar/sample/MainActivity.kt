@@ -3,7 +3,9 @@ package com.github.gfranks.collapsible.calendar.sample
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import com.github.gfranks.collapsible.calendar.CollapsibleCalendarView
 import com.github.gfranks.collapsible.calendar.model.CollapsibleCalendarEvent
 import kotlinx.android.synthetic.main.activity_main.*
@@ -20,7 +22,7 @@ class MainActivity : Activity(), CollapsibleCalendarView.ICollapsibleCalendarLis
 
     init {
         for (i in -20..79) {
-            events.add(Event("Event " + (i + 1), System.currentTimeMillis() + 21600000 * i))
+            events.add(Event("Event " + (i + 21), System.currentTimeMillis() + 21600000 * i))
         }
     }
 
@@ -37,12 +39,17 @@ class MainActivity : Activity(), CollapsibleCalendarView.ICollapsibleCalendarLis
     }
 
     override fun onDateSelected(date: LocalDate, events: List<CollapsibleCalendarEvent>) {
+        Log.d("TAG", "onDateSelected $date")
         if (mAdapter == null || calendar_event_list.adapter == null) {
             mAdapter = EventListAdapter(this, ArrayList(events))
             calendar_event_list.adapter = mAdapter
         } else {
             mAdapter?.setEvents(events)
         }
+    }
+
+    override fun onDateSelectedByTouch(date: LocalDate, events: List<CollapsibleCalendarEvent>) {
+        Log.d("TAG", "onDateSelectedByTouch $date")
     }
 
     override fun onMonthChanged(date: LocalDate?) {}

@@ -26,9 +26,6 @@ internal abstract class ProgressManager(
     val currentHeight: Int
         get() = mCalendarView.layoutParams.height - mCalendarHolder!!.minHeight
 
-    val startSize: Int
-        get() = 0
-
     val endSize: Int
         get() = mCalendarHolder!!.height
 
@@ -46,20 +43,17 @@ internal abstract class ProgressManager(
         mWeeksHolder!!.animate(progress)
 
         // animate views if necessary
-        if (mViews != null) {
-            for (view in mViews) {
-                view.animate(progress)
-            }
+        for (view in mViews) {
+            view.animate(progress)
         }
 
         // request layout
         mCalendarView.requestLayout()
-
     }
 
     abstract fun finish(expanded: Boolean)
 
-    fun getProgress(distance: Int): Float {
+    private fun getProgress(distance: Int): Float {
         val height = mCalendarHolder!!.height
         return if (height == 0) {
             1f

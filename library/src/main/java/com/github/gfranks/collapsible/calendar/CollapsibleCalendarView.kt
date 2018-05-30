@@ -1,5 +1,6 @@
 package com.github.gfranks.collapsible.calendar
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -52,6 +53,7 @@ class CollapsibleCalendarView @JvmOverloads constructor(
     private var mListener: ICollapsibleCalendarListener? = null
     private var mHeader: LinearLayout? = null
     private val mResizeManager: ResizeManager
+    private val mScrollManager: ScrollManager
     private var mInitialized: Boolean = false
 
     internal var manager: CalendarManager
@@ -119,6 +121,7 @@ class CollapsibleCalendarView @JvmOverloads constructor(
         manager = CalendarManager(LocalDate.now(), startingState, null, null)
         mInflater = LayoutInflater.from(context)
         mResizeManager = ResizeManager(this)
+        mScrollManager = ScrollManager(this)
         View.inflate(context, R.layout.calendar_layout, this)
         orientation = LinearLayout.VERTICAL
 
@@ -128,16 +131,18 @@ class CollapsibleCalendarView @JvmOverloads constructor(
 
     override fun dispatchDraw(canvas: Canvas) {
         mResizeManager.onDraw()
+        mScrollManager.onDraw()
         super.dispatchDraw(canvas)
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
-        return mResizeManager.onInterceptTouchEvent(ev)
+        return mScrollManager.onInterceptTouchEvent(ev) || mResizeManager.onInterceptTouchEvent(ev)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         super.onTouchEvent(event)
-        return mResizeManager.onTouchEvent(event)
+        return mScrollManager.onTouchEvent(event) && mResizeManager.onTouchEvent(event)
     }
 
     override fun onTouch(v: View, event: MotionEvent): Boolean {
@@ -189,6 +194,7 @@ class CollapsibleCalendarView @JvmOverloads constructor(
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
+        mScrollManager.recycle()
         mResizeManager.recycle()
     }
 
@@ -440,6 +446,7 @@ class CollapsibleCalendarView @JvmOverloads constructor(
                     if (manager.selectDay(date)) {
                         populateLayout()
                         mListener?.onDateSelected(date, manager.getEventsForDate(date))
+                        mListener?.onDateSelectedByTouch(date, manager.getEventsForDate(date))
                     }
                 }
             } else {
@@ -490,6 +497,7 @@ class CollapsibleCalendarView @JvmOverloads constructor(
 
     interface ICollapsibleCalendarListener {
         fun onDateSelected(date: LocalDate, events: List<CollapsibleCalendarEvent>)
+        fun onDateSelectedByTouch(date: LocalDate, events: List<CollapsibleCalendarEvent>)
         fun onMonthChanged(date: LocalDate?)
         fun onHeaderClick()
     }
